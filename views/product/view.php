@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="product-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
+    <h2><?php var_dump($_SERVER['DOCUMENT_ROOT'])?></h2>
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
