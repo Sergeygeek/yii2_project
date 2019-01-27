@@ -62,7 +62,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks()
+    public function getCreatedTasks()
     {
         return $this->hasMany(Task::className(), ['creator_id' => 'id']);
     }
@@ -70,7 +70,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks0()
+    public function getUpdatedTasks()
     {
         return $this->hasMany(Task::className(), ['updater_id' => 'id']);
     }
@@ -78,7 +78,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTaskUsers()
+    public function getSharedTasksUsers()
     {
         return $this->hasMany(TaskUser::className(), ['user_id' => 'id']);
     }
