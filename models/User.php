@@ -16,12 +16,13 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  *
- * @property Task[] $tasks
- * @property Task[] $tasks0
- * @property TaskUser[] $taskUsers
+ * @property Task[] $createdTasks
+ * @property Task[] $updatedTasks
+ * @property TaskUser[] $tasksUsers
  */
 class User extends \yii\db\ActiveRecord
 {
+    const ACCESSED_TASKS = 'accessedTasks';
     /**
      * {@inheritdoc}
      */
@@ -78,9 +79,14 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSharedTasksUsers()
+    public function getTasksUsers()
     {
         return $this->hasMany(TaskUser::className(), ['user_id' => 'id']);
+    }
+
+    public function getAccessedTasks()
+    {
+        return $this->hasMany(Task::className(), ['id' => 'task_id'])->via('tasksUsers');
     }
 
     /**

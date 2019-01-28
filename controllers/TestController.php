@@ -5,7 +5,9 @@ namespace app\controllers;
 
 use app\components\TestService;
 use app\models\Product;
+use app\models\User;
 use yii\db\Query;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 
 class TestController extends Controller
@@ -16,13 +18,18 @@ class TestController extends Controller
 
     public function actionIndex()
     {
-        $product = new Product();
-        $product->safeAttributes(
-            ['id' => 11, 'name' => 'First', 'category' => 'car', 'price' => 123]
-        );
+//        $product = new Product();
+//        $product->safeAttributes(
+//            ['id' => 11, 'name' => 'First', 'category' => 'car', 'price' => 123]
+//        );
+        $user = User::findOne(1);
+        $users = User::find()->with("createdTasks")->all();
+        foreach ($users as $user){
+            echo VarDumper::dumpAsString($user, 5, true);
+        }
         $service = \Yii::$app->test->launch();
         return $this->render('index', [
-            'product' => $product,
+            'product' => $user,
             'service' => $service,
         ]);
     }
