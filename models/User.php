@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "user".
@@ -19,10 +21,13 @@ use Yii;
  * @property Task[] $createdTasks
  * @property Task[] $updatedTasks
  * @property TaskUser[] $tasksUsers
+ * @mixin TimestampBehavior
  */
-class User extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     const ACCESSED_TASKS = 'accessedTasks';
+    const CREATED_TASKS = 'createdTasks';
+    public $password;
     /**
      * {@inheritdoc}
      */
@@ -31,13 +36,24 @@ class User extends \yii\db\ActiveRecord
         return 'user';
     }
 
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+            ['class' => BlameableBehavior::class,
+             'createdByAttribute' => 'creator_id',
+             'updatedByAttribute' => 'updater_id'
+                ]
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['username', 'password_hash', 'creator_id', 'created_at'], 'required'],
+            [['username'], 'required'],
             [['creator_id', 'updater_id', 'created_at', 'updated_at'], 'integer'],
             [['username', 'password_hash', 'auth_key'], 'string', 'max' => 255],
         ];
@@ -58,6 +74,67 @@ class User extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    public function beforeSave($password)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($this->isNewRecord) {
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+        }
+
+        $this->password = \Yii::$app->getSecurity()->generatePasswordHash($password);
+        return true;
+    }
+
+    /**
+     * Finds an identity by the given ID.
+     *
+     * @param string|int $id the ID to be looked for
+     * @return IdentityInterface|null the identity object that matches the given ID.
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    /**
+     * Finds an identity by the given token.
+     *
+     * @param string $token the token to be looked for
+     * @return IdentityInterface|null the identity object that matches the given token.
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(['access_token' => $token]);
+    }
+
+    /**
+     * @return int|string current user ID
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string current user auth key
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
+    /**
+     * @param string $authKey
+     * @return bool if auth key is valid for current user
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->getAuthKey() === $authKey;
     }
 
     /**

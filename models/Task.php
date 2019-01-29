@@ -21,6 +21,7 @@ use Yii;
  */
 class Task extends \yii\db\ActiveRecord
 {
+    const CREATOR = 'creator';
     /**
      * {@inheritdoc}
      */

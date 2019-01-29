@@ -129,32 +129,32 @@ class UserController extends Controller
 //        $task->description = "Приготовить шоколадный торт";
 //        $task->created_at = time();
 //
-//        $task->link('creator', $admin);
+//        $task->link(Task::CREATOR, $admin);
 //
 //        $task1 = new Task();
 //        $task1->title = "Книга";
 //        $task1->description = "Прочитать книгу паттерны проектирования";
 //        $task1->created_at = time();
 //
-//        $task1->link('creator', $user);
+//        $task1->link(Task::CREATOR, $user);
 //
 //        $task2 = new Task();
 //        $task2->title = "Бег";
 //        $task2->description = "Пробежать 15 км";
 //        $task2->created_at = time();
 //
-//        $task2->link('creator', $admin);
-//        $users = User::find()->with("createdTasks")->all();
+//        $task2->link(Task::CREATOR, $admin);
+//        $users = User::find()->with(User::CREATED_TASKS)->all();
 //        foreach ($users as $user){
 //            echo VarDumper::dumpAsString($user, 5, true);
 //        }
-//        $users = User::find()->joinWith("createdTasks")->all();
+//        $users = User::find()->joinWith(User::CREATED_TASKS)->all();
 //        foreach ($users as $user){
 //            echo VarDumper::dumpAsString($user, 5, true);
 //        }
         $user = User::findOne(3);
         $task = Task::findOne(4);
-        $user->link('accessedTasks', $task);
+        $user->link(User::ACCESSED_TASKS, $task);
     }
 
     /**
