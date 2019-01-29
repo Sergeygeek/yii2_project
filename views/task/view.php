@@ -4,17 +4,17 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Product */
+/* @var $model app\models\Task */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
+$this->title = $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="product-view">
+<div class="task-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <h2><?php var_dump($_SERVER['DOCUMENT_ROOT'])?></h2>
+
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -30,15 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            ['attribute' => 'name',
-             'value' => '<b>' . $model->name . '</b>',
-             'format' => 'html'
-            ],
-            'price',
-            ['attribute' =>'created_at',
-             'format' => 'datetime',
-             'contentOptions' => ['class' => 'small'],
-            ],
+            'title',
+            'description:ntext',
+            'creator_id',
+            'updater_id',
+            'created_at',
+            'updated_at',
         ],
     ]) ?>
 
