@@ -40,10 +40,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             TimestampBehavior::class,
-//            ['class' => BlameableBehavior::class,
-//             'createdByAttribute' => 'creator_id',
-//             'updatedByAttribute' => 'updater_id'
-//                ]
+            ['class' => BlameableBehavior::class,
+             'createdByAttribute' => 'creator_id',
+             'updatedByAttribute' => 'updater_id'
+                ]
         ];
     }
 
