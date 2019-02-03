@@ -55,7 +55,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['username'], 'required'],
             [['creator_id', 'updater_id', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_hash', 'auth_key'], 'string', 'max' => 255],
+            [['username', 'password', 'auth_key'], 'string', 'max' => 255],
         ];
     }
 
@@ -76,7 +76,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
-    public function beforeSave($password)
+    public function beforeSave($insert)
     {
         if (!parent::beforeSave($insert)) {
             return false;
@@ -86,7 +86,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             $this->auth_key = \Yii::$app->security->generateRandomString();
         }
 
-        $this->password = \Yii::$app->getSecurity()->generatePasswordHash($password);
+        if ($this->password) {
+            $this->password_hash = \Yii::$app->getSecurity()->generatePasswordHash($this->password);
+        }
+
+
         return true;
     }
 
@@ -113,6 +117,17 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Finds user by [[username]]
+     *
+     * @param string $username
+     * @return static|null
+     */
+    public static function findByUsername($username)
+    {
+        return User::findOne(['username' => $username]);
+    }
+
+    /**
      * @return int|string current user ID
      */
     public function getId()
@@ -135,6 +150,17 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
+    }
+
+    /**
+     * Validates password
+     *
+     * @param string $password password to validate
+     * @return bool if password provided is valid for current user
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->getSecurity()->validatePassword($password, $this->password_hash);
     }
 
     /**
