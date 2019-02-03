@@ -2,6 +2,9 @@
 
 namespace app\models\query;
 
+use app\models\Task;
+use app\models\User;
+
 /**
  * This is the ActiveQuery class for [[\app\models\User]].
  *
@@ -30,5 +33,10 @@ class UserQuery extends \yii\db\ActiveQuery
     public function one($db = null)
     {
         return parent::one($db);
+    }
+
+    public function notCreator($userId)
+    {
+        return $this->andWhere(['<>', 'id', $userId]);
     }
 }
