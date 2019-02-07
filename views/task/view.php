@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Task */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['my']];
